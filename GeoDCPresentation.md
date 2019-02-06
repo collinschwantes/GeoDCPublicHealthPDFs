@@ -234,3 +234,24 @@ PDFTools: PAHO Example
 [3] "               ⁷,⁹                                                    30,845                             382                          0                           6615.89                        0                               5                              472" 
 [4] "Brazil17                                                              231,725                          137,288                        0                            176.10                       11                             2,952                         209,553"
 ```
+
+PDFTools: PAHO Example
+======================================
+
+
+```
+# A tibble: 52 x 8
+   Country      Suspected Confirmed Imported Incidence Deaths ZikaCS Pop  
+   <chr>        <chr>     <chr>     <chr>    <chr>     <chr>  <chr>  <chr>
+ 1 Bermuda      0         0         6        0.00      0      0      71   
+ 2 Canada       0         0         544      0.00      0      1      36284
+ 3 United Stat… 0         227       5335     0.07      0      102    3252…
+ 4 Mexico       0         11805     15       9.18      0      20     1286…
+ 5 Belize       2005      355       0        636.12    0      0      371  
+ 6 Costa Rica   7782      2008      32       200.57    0      19     4881 
+ 7 El Salvador  11789     51        0        192.61    0      4      6147 
+ 8 Guatemala    3907      1032      0        29.62     0      140    16674
+ 9 Honduras     32385     308       0        399.18    0      8      8190 
+10 Nicaragua    0         2795      3        45.20     0      2      6184 
+# ... with 42 more rows
+```

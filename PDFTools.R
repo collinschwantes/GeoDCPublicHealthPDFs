@@ -4,6 +4,16 @@ library(stringr)
 library(dplyr)
 library(pdftools)
 library(geonames)
+library(ggmap)
+library(rgdal)
+library(maps)
+library(sp)
+library(sf)
+library(ggplot2)
+library(jsonlite)
+library(leaflet)
+library(maptools)
+library(viridis)
 
 #set geonames username and host using options 
 # options(geonamesUsername = "my.geoname",geonamesHost = "api.geonames.org")
@@ -83,4 +93,44 @@ names(PAHOtb) <- c("Country", "Suspected","Confirmed", "Imported","Incidence","D
 
 PAHOtb$Country <- gsub(pattern = "[^[:alpha:]| ]",replacement = "",x = PAHOtb$Country)
 
+PAHOtb <- PAHOtb %>% filter(Country != "Subtotal")
+
+PAHOtb$Country <- gsub(pattern = "Virgin Islands UK",replacement = "British Virgin Islands",x = PAHOtb$Country)
+PAHOtb$Country <- gsub(pattern = "Saint Martin",replacement = "MF",x = PAHOtb$Country)
+PAHOtb$Country <- gsub(pattern = "Venezuela Bolivarian Republic of",replacement = "Venezuela",x = PAHOtb$Country)
+
+#PAHOtb
+
+gdf <- PAHOtb$Country %>% 
+  map_dfr(~GNsearch(q= .x, featureClass = "A", maxRows = 1))
+
+#missing british virigin islands
+#miss labeled Saint Martin
+# missing Venezuela
+
+PAHOtbgeo <- cbind(PAHOtb,gdf)
+
+#from maptools
+wrld_simpl
+
+summary(wrld_simpl)
+
+head(PAHOtbgeo)
+
+forJoin <- PAHOtbgeo[c(2:4,16)]
+
+
+wrld_simpl@data
+
+wrld_simpl@data <- left_join(wrld_simpl@data, forJoin, c("ISO2" = "countryCode"))
+
+wrld_simpl@data$Suspected <- as.numeric(wrld_simpl@data$Suspected)
+
+
+pal <- colorNumeric("viridis",NULL)
+
+leaflet(wrld_simpl) %>% setView(-96, 37.8, 2) %>% 
+  addPolygons(stroke = T, color = "white", opacity = 3, weight = 1,
+              fillOpacity = 1,fillColor = ~pal(Suspected),
+              popup = ~as.character(Suspected) )
 
