@@ -14,3 +14,5 @@ writeBin(object = PDFraw, con = "./ExamplePDFs/Paho.pdf")
 
 
 pdf_text(pdf = "./examplePDFs/Paho.PDF")
+
+

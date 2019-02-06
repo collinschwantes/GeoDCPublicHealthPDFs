@@ -97,6 +97,7 @@ Read the documentation
 
 How to fix: OCR result
 =========================================================
+
 Before
 
 ```
@@ -172,5 +173,14 @@ If you can get java JDK and R to connect properly it probably works great. [Trou
 PDFTools
 ==========================================
 
+"Utilities based on 'libpoppler' for extracting **text**, fonts, attachments and metadata from a PDF file. Also supports high quality rendering of PDF documents into PNG, JPEG, TIFF format, or into raw bitmap vectors for further processing in R"
 
+- great for getting text from pdf's
+- can also be used for getting images embedded in PDF
 
+PDFTools : PAHO Example
+=========================================
+
+*Before you start, review [regex](https://github.com/rstudio/cheatsheets/raw/master/regex.pdf) 
+
+![PAHO][(./examplePDFs/Paho.png)
