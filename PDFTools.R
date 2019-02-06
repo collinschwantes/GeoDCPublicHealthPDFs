@@ -75,5 +75,8 @@ PAHOtb <- do.call(rbind,dataPaho)
 
 PAHOtb <- as_tibble(PAHOtb)
 
-names(PAHOtb)
+names(PAHOtb) <- c("Country", "Suspected","Confirmed", "Imported","Incidence","Deaths","ZikaCS","Pop")
+
+PAHOtb$Country <- gsub(pattern = "[^[:alpha:]| ]",replacement = "",x = PAHOtb$Country)
+
 
