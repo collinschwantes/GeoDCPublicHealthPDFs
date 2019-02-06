@@ -111,21 +111,10 @@ gdf <- PAHOtb$Country %>%
 PAHOtbgeo <- cbind(PAHOtb,gdf)
 
 #from maptools
-wrld_simpl
-
-summary(wrld_simpl)
-
-head(PAHOtbgeo)
 
 forJoin <- PAHOtbgeo[c(2:4,16)]
 
-
-wrld_simpl@data
-
 wrld_simpl@data <- left_join(wrld_simpl@data, forJoin, c("ISO2" = "countryCode"))
-
-wrld_simpl@data$Suspected <- as.numeric(wrld_simpl@data$Suspected)
-
 
 pal <- colorNumeric("viridis",NULL)
 
