@@ -4,13 +4,15 @@ author: Collin Schwantes
 date: 04 February 2019
 css: custom.css
 
+https://github.com/collinschwantes/GeoDCPublicHealthPDFs
+
 Why Should I care? 
 ========================================================
  
 - Ebola
-- Hantavirus
+- Zika
 - Vaccine preventable diseases
-- lead poisoning
+- Lead levels
 
 Why PDFs?
 ========================================================
@@ -49,10 +51,14 @@ What are my options?
 Why use OCR?
 ========================================================
 
-PDFs and websites often contain content in images.
-- most OCR works best in dense text settings
+- PDFs and websites often contain content in images
 - Adobe OCR works pretty well for tables sometimes 
-- Tesseract in R requires a lot of finessing
+- Tesseract can provide a programtic way of extracting text 
+
+An Example: OCR
+================
+
+![EbolaTable](https://gallery.mailchimp.com/89e5755d2cca4840b1af93176/images/62e6af37-9999-49f3-b6ef-30b56ede0459.png)
 
 An Example: OCR
 ==================
@@ -167,9 +173,87 @@ PDFTools
 - great for getting text from pdf's
 - can also be used for getting images embedded in PDF
 
-PDFTools : PAHO Example
+PDFTools: PAHO Example
 =========================================
 
+
+
+![PAHO](./examplePDFs/Paho.png)
+
+PDFTools: PAHO Example
+======================================
 *Before you start, review [regex](https://github.com/rstudio/cheatsheets/raw/master/regex.pdf) 
 
-![PAHO][(./examplePDFs/Paho.png)
+```{r,eval=FALSE}
+
+library(pdftools)
+library(stringr)
+library(dplyr)
+library(purrr)
+library(httr)
+
+PahoDF <- GET(url = "https://www.paho.org/hq/index.php?option=com_docman&view=download&category_slu=cumulative-cases-pdf-8865&alias=43296-zika-cumulative-cases-4-january-2018-296&Itemid=270&lang=en")
+
+PDFraw <- content(x = PahoPDF,as = "raw")
+
+writeBin(object = PDFraw, con = "./ExamplePDFs/Paho.pdf")
+
+
+pathPAHO <- list.files(path = "./ExamplePDFs",pattern = "Paho.pdf",full.names = T)
+
+pdf_text(pdf = "./examplePDFs/Paho.PDF")
+
+```
+
+
+PDFTools: PAHO Example
+======================================
+
+```{r,echo=FALSE}
+
+library(pdftools)
+library(stringr)
+library(dplyr)
+library(purrr)
+library(httr)
+
+
+
+pathPAHO <- list.files(path = "./ExamplePDFs",pattern = "Paho.pdf",full.names = T)
+
+pahotext <- pdf_text(pdf = pathPAHO)[[1]]
+
+matches <- gregexpr(pattern = "North America|Subtotal",text  = pahotext)
+
+ str_sub(string = pahotext,start = (matches[[1]][1]+14),end = matches[[1]][length(matches[[1]])]
+)
+
+
+```
+
+PDFTools: PAHO Example
+======================================
+
+```{r,echo=FALSE}
+
+library(pdftools)
+library(stringr)
+library(dplyr)
+library(purrr)
+library(httr)
+
+
+
+pathPAHO <- list.files(path = "./ExamplePDFs",pattern = "Paho.pdf",full.names = T)
+
+pahotext <- pdf_text(pdf = pathPAHO)[[1]]
+
+matches <- gregexpr(pattern = "North America|Subtotal",text  = pahotext)
+
+tableText <- str_sub(string = pahotext,start = (matches[[1]][1]+14),end = matches[[1]][length(matches[[1]])]
+)
+
+str_split(string = tableText,pattern = "\n")[[1]][c(10,21,22,38)]
+
+
+```

@@ -31,3 +31,26 @@ EbolaText <- ocr(engine = tesseract("fra",
                         image = imgp)
 
 cat(EbolaText)
+
+## with crop
+
+library(magick)
+library(tesseract)
+
+img <- "./examplePDFs/EbolaCropHZ.png"
+
+imgp <- img %>%   image_read() %>%
+  image_resize("2000x") %>%
+  image_convert(type = 'Grayscale') %>%
+  image_trim(fuzz = 40) 
+
+#set engine parameters to look for tables
+
+EbolaText <- ocr(engine = tesseract("fra",
+                                    options = list(tessedit_pageseg_mode = 'auto',
+                                                   textord_tabfind_find_tables = '1',
+                                                   textord_tablefind_recognize_tables = '1')),
+                 image = imgp)
+
+cat(EbolaText)
+
