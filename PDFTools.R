@@ -3,6 +3,10 @@ library(httr)
 library(stringr)
 library(dplyr)
 library(pdftools)
+library(geonames)
+
+#set geonames username and host using options 
+# options(geonamesUsername = "my.geoname",geonamesHost = "api.geonames.org")
 
 PahoPDF <- GET(url = "https://www.paho.org/hq/index.php?option=com_docman&view=download&category_slug=cumulative-cases-pdf-8865&alias=43296-zika-cumulative-cases-4-january-2018-296&Itemid=270&lang=en")
 
