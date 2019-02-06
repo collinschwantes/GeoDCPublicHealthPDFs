@@ -2,7 +2,7 @@ Parsing Public Health PDF's
 ========================================================
 author: Collin Schwantes
 date: 04 February 2019
-autosize: true
+css: custom.css
 
 Why Should I care? 
 ========================================================
@@ -26,7 +26,7 @@ Why Are PDF's hard to work with?
 
 - Designed to be human readable
 - Designed to be printed
-- NOT designed as a machine-readable data store
+- Generally not designed as a machine-readable data store
 
 But isn't the XML uniform and manipulatable?
 ========================================================
@@ -43,7 +43,7 @@ Hopefully!
 What are my options?
 ========================================================
 - PDFTools - text based pdfs
-- XMLTools - sometimes its easier
+- Tabulizer - Java-based tool with R wrapper
 - Tesseract - OCR without leaving R 
 
 Why use OCR?
@@ -54,10 +54,21 @@ PDFs and websites often contain content in images.
 - Adobe OCR works pretty well for tables sometimes 
 - Tesseract in R requires a lot of finessing
 
+An Example: OCR
+==================
+
+![EbolaTable](https://gallery.mailchimp.com/89e5755d2cca4840b1af93176/images/62e6af37-9999-49f3-b6ef-30b56ede0459.png)
+***
+- Health Zones nested in provinces
+- Case status nested in category "cumulative"
+- Different colors
+- French (bias is in training data is real)
+- Sparse text
 
 What can go wrong: OCR Tesseract
 ========================================================
-# I TRIED
+
+## I TRIED
 it is finnicky, the params list is a mile long
 ```{r, echo=FALSE}
 library(tesseract)
@@ -65,18 +76,90 @@ library(dplyr)
 
 EbolaText <- ocr(engine = tesseract("fra"),image = "https://gallery.mailchimp.com/89e5755d2cca4840b1af93176/images/62e6af37-9999-49f3-b6ef-30b56ede0459.png")
 
-cat(EbolaText)
+cat(substr(EbolaText,start = 1,stop = 200))
 ```
 
 
 How to fix: OCR issues
 ========================================================
+Read the documentation 
+- [docs](https://github.com/tesseract-ocr/tesseract/wiki/ControlParams)
+- [tutorial](http://www.joyofdata.de/blog/a-guide-on-ocr-with-tesseract-3-03/)
+- Preprocess your image
+- train a new engine with data from your region of interest
 
-XMLTools
+How to fix: OCR result
+=========================================================
+Before
+```{r, echo=FALSE}
+library(tesseract)
+library(dplyr)
+
+EbolaText <- ocr(engine = tesseract("fra"),image = "https://gallery.mailchimp.com/89e5755d2cca4840b1af93176/images/62e6af37-9999-49f3-b6ef-30b56ede0459.png")
+
+cat(substr(EbolaText,start = 1,stop = 200))
+```
+***
+After - needs improvement
+```{r,echo=FALSE}
+library(magick)
+library(tesseract)
+
+img <- "https://gallery.mailchimp.com/89e5755d2cca4840b1af93176/images/62e6af37-9999-49f3-b6ef-30b56ede0459.png"
+
+imgp <- img %>%   image_read() %>%
+  image_resize("2000x") %>%
+  image_convert(type = 'Grayscale') %>%
+  image_trim(fuzz = 40) 
+
+#set engine parameters to look for tables
+
+EbolaText <- ocr(engine = tesseract("fra",
+                      options = list(tessedit_pageseg_mode = 'auto',
+                           textord_tabfind_find_tables = '1',
+                           textord_tablefind_recognize_tables = '1')),
+                        image = imgp)
+
+cat(substr(EbolaText,start = 1,stop = 200))
+```
+
+
+Other OCR Tricks: Cropping
+=======================================================
+![EbolaCrop](./examplePDFs/EbolaCropHZ.png)
+***
+```{r,echo=FALSE}
+library(magick)
+library(tesseract)
+
+img <- "./examplePDFs/EbolaCropHZ.png"
+
+imgp <- img %>%   image_read() %>%
+  image_resize("2000x") %>%
+  image_convert(type = 'Grayscale') %>%
+  image_trim(fuzz = 40) 
+
+#set engine parameters to look for tables
+
+EbolaText <- ocr(engine = tesseract("fra",
+                      options = list(tessedit_pageseg_mode = 'auto',
+                           textord_tabfind_find_tables = '1',
+                           textord_tablefind_recognize_tables = '1')),
+                        image = imgp)
+
+cat(EbolaText)
+```
+
+
+Tabulizer
 ========================================================
-This works really well when you can convert a pdf to html  
-- Especially useful if you need to use translation services
-- Sometimes tables come out in perfectly coded html
+
+If you can get java JDK and R to connect properly it probably works great. [Troubleshooting docs](https://github.com/ropensci/tabulizer#installing-java-on-windows-with-chocolatey) from the great folks at ROpenSci
+
+![kittens](https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif)
+
+PDFTools
+==========================================
 
 
 
