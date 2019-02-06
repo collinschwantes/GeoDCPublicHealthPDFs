@@ -14,7 +14,8 @@ library(jsonlite)
 library(leaflet)
 library(maptools)
 library(viridis)
-
+library(htmlwidgets)
+  
 #set geonames username and host using options 
 # options(geonamesUsername = "my.geoname",geonamesHost = "api.geonames.org")
 
@@ -118,8 +119,9 @@ wrld_simpl@data <- left_join(wrld_simpl@data, forJoin, c("ISO2" = "countryCode")
 
 pal <- colorNumeric("viridis",NULL)
 
-leaflet(wrld_simpl) %>% setView(-96, 37.8, 2) %>% 
+leafletmap <- leaflet(wrld_simpl) %>% setView(-96, 37.8, 2) %>% 
   addPolygons(stroke = T, color = "white", opacity = 3, weight = 1,
               fillOpacity = 1,fillColor = ~pal(Suspected),
               popup = ~as.character(Suspected) )
 
+saveWidget(leafletmap,"./leafletMap.html")

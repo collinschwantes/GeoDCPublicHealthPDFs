@@ -351,3 +351,18 @@ PAHOtb$Country <- gsub(pattern = "Venezuela Bolivarian Republic of",replacement 
 PAHOtb
 
 ```
+
+PDFTools: PAHO Example
+=============
+
+- Clean up data types
+- Connect Admin areas to standard names
+- Join to geopatial data (polygons)
+- Display the data!
+
+PDFTools: PAHO Example
+=============
+```{r, echo= FALSE}
+shiny::includeHTML("./leafletMap.html")
+```
+
